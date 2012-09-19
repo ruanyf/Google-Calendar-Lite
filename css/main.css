@@ -1,0 +1,29 @@
+body{
+  font-size:120%;
+  line-height:120%;
+}
+
+li{
+  line-height:150%;
+}
+
+header{
+
+ padding:0.3em;
+  text-align:center;
+  margin-bottom:1em;
+   border-bottom:1px solid Silver;   
+}
+
+#welcome img{
+  text-align:right;
+}
+
+#login, #login-message{
+  text-align:center;
+}
+
+#login a{
+  font-size:150%;
+  padding:0.3em 1em;
+}
