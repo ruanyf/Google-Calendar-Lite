@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Google日历简易版</title>
    <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -44,7 +45,7 @@
 
     <div class="row-fluid" id="login">
       <div class="span12">
-        <a class="btn btn-primary btn-large">登录</a>
+        <a role="button" class="btn btn-primary btn-large">登录</a>
       </div>
     </div>  
 
@@ -60,6 +61,16 @@
 
   </div>
 <!--WELCOME SECTION ENDS-->
-  
+
+<div class="modal hide fade" tabindex="-1"  id="modal-progress-bar">
+ <div class="modal-header"></div>
+  <div class="modal-body">
+  <div class="progress progress-striped active">
+    <div class="bar" style="width: 0%;"></div>
+  </div>
+  </div>
+  <div class="modal-footer"></div>
+</div>
+
 </body>
 </html>
