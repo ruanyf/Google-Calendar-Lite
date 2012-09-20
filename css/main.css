@@ -15,8 +15,8 @@ header{
    border-bottom:1px solid Silver;   
 }
 
-#welcome img{
-  text-align:right;
+#welcome-img-holder{
+  text-align:center;
 }
 
 #login, #login-message{

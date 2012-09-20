@@ -9,6 +9,7 @@
 <body>
    <script src="http://code.jquery.com/jquery-latest.js"></script>
    <script src="js/bootstrap.min.js"></script>
+   <script src="js/main.js"></script>
 
   <header class="container-fluid">
 
@@ -19,13 +20,15 @@
     </div>
 
   </header>
-   
+  
+
+<!-- WELCOME SECTION BEGINS -->
   <div class="container-fluid" id="welcome">
 
 
     <div class="hero-unit">
       <div class="row-fluid">
-        <div class="span4">
+        <div class="span4" id="welcome-img-holder">
           <img src="img/calendar.png" />
         </div>
         <div class="span8">
@@ -40,23 +43,23 @@
     </div>
 
     <div class="row-fluid" id="login">
-    
-    <div class="span12">
-
-    <a class="btn btn-primary btn-large">登录</a>
-
-    </div>
-    
+      <div class="span12">
+        <a class="btn btn-primary btn-large">登录</a>
+      </div>
+    </div>  
 
     <div class="row-fluid" id="login-message">
 
-    <div class="span12"></div>
+      <div class="alert alert-error">
+
+        <strong>很抱歉!</strong> 暂时不支持您的浏览器，推荐使用最新版本的<a href="http://www.google.com/chrome">Chrome</a>或<a href="http://getfirefox.com/">Firefox</a>浏览器。
+
+      </div>
 
     </div>
 
-    </div>
-
-
-    </div>
-   </body>
+  </div>
+<!--WELCOME SECTION ENDS-->
+  
+</body>
 </html>
