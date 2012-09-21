@@ -32,70 +32,17 @@ jQuery(document).ready(function(){
 
     }
 
+    // 用户未登录
 
-    // 显示结果页面
-
-    if (hash["state"]==="login"){
-
-      var welcome = $("#welcome");
-
-      welcome.hide();
-
-      var content = $("#content");
-
-      content.show();
-
-      if(hash["access_token"]){
-
-
-
-        var access_token = hash["access_token"];
-
-        // 此处省略验证access token的步骤，将来可以在Calendar对象中部署
-
-        // 读出日历列表
-
-        // console.info(access_token);
-
-        var response = Calendar.getCalendarList(access_token);
-
-        // console.dir(response);
-
-        var contentMessage = $("#content-result").text(Calendar.listResponse);
-
-
-      } else {
-
-        $("#content-result").hide();
-
-        var message;
-
-        if (hash["error"]){
-          message = "未获得授权。";
-        } else {
-          message = "请正常登录。";
-        }
-
-        message = "<strong>提示：</strong> "+ message + "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
-
-        console.info(message);
-
-        $("#content-message").show().find(".alert").addClass("alert-error").html(message);
-
-
-      }
+    if (hash["state"]!=="login"){
       
-
-
-    } else {
-
-    // 显示登录页面
-    
     var loginMessage = $("#login-message");
 
     loginMessage.hide();
 
     var login = $("#login");
+
+    // 判断是否支持垮域请求
 
     if (!XMLHttpRequest || !("withCredentials" in new XMLHttpRequest()) ){
  
@@ -131,7 +78,98 @@ jQuery(document).ready(function(){
     window.location = Calendar.getLoginUrl();
 
       });
-  }
+      return ;
+
+    }
+
+// 用户点击登录按钮后，从Google跳转回来
+
+      var welcome = $("#welcome");
+
+      welcome.hide();
+
+      var content = $("#content");
+
+      content.show();
+
+      // 如果没有获得用户授权
+
+      if(!hash["access_token"]){
+        $("#content-result").hide();
+
+        var message;
+
+        if (hash["error"]){
+          message = "未获得授权。"+hash["error"];
+        } else {
+          message = "请正常登录。";
+        }
+
+        message = "<strong>提示：</strong> "+ message + "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
+
+        console.info(message);
+
+        $("#content-message").show().find(".alert").addClass("alert-error").html(message);
+
+        return ;
+
+      }
+
+// 已经获得用户授权
+
+        var access_token = hash["access_token"];
+
+        // 此处省略验证access token的步骤，将来可以在Calendar对象中部署
+
+        // 读出日历列表
+
+        // console.info(access_token);
+
+        Calendar.getCalendarList(access_token);
+
+        // console.dir(response);
+
+        var response = Calendar.listResponse;
+
+        // 如果取回的Calendar List有错误
+
+        if (!response["items"]){
+          var errorMessage = (response["error"]?response["error"]["message"]:"返回结果有错误。");
+
+          errorMessage = "<strong>提示：</strong>"+errorMessage+ "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
+
+        $("#content-message").find(".alert").addClass("alert-error").html(errorMessage).show();
+      return ;
+        }
+
+// 已经取回了日历列表
+
+    Calendar.setListEntry(response["items"]);
+
+// 如果日历列表项为空
+
+    if(Calendar.listEntry.length===0){
+      var infoMessage = "<strong>提示：</strong>您尚未创建任何日历。<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
+
+        $("#content-message").find(".alert").addClass("alert-info").html(infoMessage).show();
+
+        return ;
+
+    }
+
+// 确定存在日历列表项
+
+   var listEntrySelect = "<select>";
+
+   for(i in Calendar.listEntry){
+
+     listEntrySelect = listEntrySelect + "<option value=\"" + Calendar.listEntry[i]["id"] + "\" " + (Calendar.listEntry[i]["main"]?"selected":"")  + " >"+Calendar.listEntry[i]["summary"]+"</option>"; 
+
+    }
+
+    listEntrySelect = listEntrySelect + "</select>";
+
+    $("#calendar-list").html("日历列表："+listEntrySelect);
 
 });
 
@@ -182,6 +220,8 @@ var Calendar = (function(window,$){
 
     // 读取日历列表
 
+    Calendar.listResponse = '';
+
     Calendar.getCalendarList = function(access_token){
 
       var _calendarListEndPoint = "https://www.googleapis.com/calendar/v3/users/me/calendarList";
@@ -204,13 +244,43 @@ var Calendar = (function(window,$){
 
           // console.info("response:"+req.responseText);
 
-          Calendar.listResponse = req.responseText; 
+          Calendar.listResponse = $.parseJSON(req.responseText); 
         }
       };
 
       req.send(null);
    
     };
+
+    // 创建日历列表
+
+    Calendar.listEntry = new Array();
+
+    Calendar.setListEntry = function(calendarListArray){
+
+      for (i in calendarListArray){
+        var item = calendarListArray[i];
+
+        if (item["accessRole"]==="owner"){
+
+          var _mainOption = 0;
+
+          if (item["id"].substring(item["id"].length-10)==="google.com" || _mainOption === 1){
+            item["main"] = 0;
+          } else {
+            item["main"] = 1;
+            _mainOption = 1;
+          }
+        
+          Calendar.listEntry.push(item);
+        
+        }
+
+      }
+
+    };
+
+
 
     return Calendar;
 
