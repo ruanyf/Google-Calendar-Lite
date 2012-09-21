@@ -138,7 +138,7 @@ jQuery(document).ready(function(){
 
           errorMessage = "<strong>提示：</strong>"+errorMessage+ "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
 
-        $("#content-message").find(".alert").addClass("alert-error").html(errorMessage).show();
+        $("#content-message").show().find(".alert").addClass("alert-error").html(errorMessage);
       return ;
         }
 
@@ -151,7 +151,7 @@ jQuery(document).ready(function(){
     if(Calendar.listEntry.length===0){
       var infoMessage = "<strong>提示：</strong>您尚未创建任何日历。<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
 
-        $("#content-message").find(".alert").addClass("alert-info").html(infoMessage).show();
+      $("#content-message").show().find(".alert").addClass("alert-info").html(infoMessage);
 
         return ;
 
@@ -169,7 +169,32 @@ jQuery(document).ready(function(){
 
     listEntrySelect = listEntrySelect + "</select>";
 
+    listEntrySelect = listEntrySelect + "<div class=\"pull-right\"><a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[退出]</a></div>";
+
     $("#calendar-list").html("日历列表："+listEntrySelect);
+
+    // 判断是否存在主日历
+
+    if (!Calendar.currentCalendar){
+
+      return;
+    }
+
+// 确定存在主日历
+
+var infoMessage = "<strong>提示：</strong>正在加载，请稍候……";
+
+$("#content-message").fadeIn().find(".alert").addClass("alert-info").html(infoMessage);
+
+ Calendar.getEventsList(Calendar.currentCalendar["id"]);
+
+var response = Calendar.eventsList;
+
+$("#content-message").fadeOut().find(".alert").removeClass("alert-info");
+
+// $("#calendar-events").text(response.toString());
+
+ console.dir(response);
 
 });
 
@@ -256,6 +281,8 @@ var Calendar = (function(window,$){
 
     Calendar.listEntry = new Array();
 
+    Calendar.currentCalendar = new Object();
+
     Calendar.setListEntry = function(calendarListArray){
 
       for (i in calendarListArray){
@@ -269,6 +296,7 @@ var Calendar = (function(window,$){
             item["main"] = 0;
           } else {
             item["main"] = 1;
+            Calendar.currentCalendar = item;
             _mainOption = 1;
           }
         
@@ -277,6 +305,37 @@ var Calendar = (function(window,$){
         }
 
       }
+
+    };
+
+    // 获取某个日历列表项的事件
+
+    Calendar.eventsList = new Object();
+
+    Calendar.getEventsList = function(calendarId){
+
+      var _eventsListEndPoint = "https://www.googleapis.com/calendar/v3/calendars/" + calendarId +"/events";
+
+      var _eventsListUrl = _eventsListEndPoint + "?maxResults=3";
+        
+      var req = new XMLHttpRequest();
+
+      req.open('GET',_eventsListUrl,false);
+
+      req.setRequestHeader("Authorization","Bearer "+_access_token);
+
+      req.onreadystatechange = function (e) {
+
+        if (req.readyState == 4) {
+
+          // console.info("response:"+req.responseText);
+
+          Calendar.eventsList = $.parseJSON(req.responseText); 
+        }
+      };
+
+      req.send(null);
+
 
     };
 
