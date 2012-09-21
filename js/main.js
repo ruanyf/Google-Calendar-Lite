@@ -47,6 +47,23 @@ jQuery(document).ready(function(){
 
       if(hash["access_token"]){
 
+
+
+        var access_token = hash["access_token"];
+
+        // 此处省略验证access token的步骤，将来可以在Calendar对象中部署
+
+        // 读出日历列表
+
+        // console.info(access_token);
+
+        var response = Calendar.getCalendarList(access_token);
+
+        // console.dir(response);
+
+        var contentMessage = $("#content-result").text(Calendar.listResponse);
+
+
       } else {
 
         $("#content-result").hide();
@@ -143,6 +160,8 @@ var Calendar = (function(window,$){
 
     var _loginUrlArray = new Array();
 
+    // 构建登录网址
+
     Calendar.getLoginUrl = function(){
     
       for(x in _loginArray){
@@ -157,9 +176,41 @@ var Calendar = (function(window,$){
     
     };
 
+    var _access_token = '';
 
 
 
+    // 读取日历列表
+
+    Calendar.getCalendarList = function(access_token){
+
+      var _calendarListEndPoint = "https://www.googleapis.com/calendar/v3/users/me/calendarList";
+
+      _access_token = access_token;
+
+      var _calendarListUrl = _calendarListEndPoint+"?access_code="+access_token;
+
+      // console.info(_calendarListUrl);
+
+      var req = new XMLHttpRequest();
+
+      req.open('GET',_calendarListEndPoint,false);
+
+      req.setRequestHeader("Authorization","Bearer "+access_token);
+
+      req.onreadystatechange = function (e) {
+
+        if (req.readyState == 4) {
+
+          // console.info("response:"+req.responseText);
+
+          Calendar.listResponse = req.responseText; 
+        }
+      };
+
+      req.send(null);
+   
+    };
 
     return Calendar;
 
