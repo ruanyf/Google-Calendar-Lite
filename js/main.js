@@ -32,6 +32,7 @@ jQuery(document).ready(function(){
 
     }
 
+
     // 显示结果页面
 
     if (hash["state"]==="login"){
@@ -40,7 +41,7 @@ jQuery(document).ready(function(){
 
       welcome.hide();
 
-      var content = $("content");
+      var content = $("#content");
 
       content.show();
 
@@ -50,19 +51,19 @@ jQuery(document).ready(function(){
 
         $("#content-result").hide();
 
-        $("#content-messege").show().addClass("alert-error");
-
         var message;
 
         if (hash["error"]){
           message = "未获得授权。";
         } else {
-          message = "请按正常流程登录。";
+          message = "请正常登录。";
         }
 
-        message = message + "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
+        message = "<strong>提示：</strong> "+ message + "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
 
-        $("#content-message").html(message);
+        console.info(message);
+
+        $("#content-message").show().find(".alert").addClass("alert-error").html(message);
 
 
       }
