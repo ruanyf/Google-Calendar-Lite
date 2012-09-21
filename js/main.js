@@ -1,5 +1,78 @@
 jQuery(document).ready(function(){
 
+    // 解析URL
+
+    var url = new Array();
+
+    url["host"] = location.host;
+
+    url["href"] = location.href;
+
+    url["path"] = location.pathname;
+
+    url["protocol"] = location.protocol;
+
+    url["port"] = location.port;
+
+    url["hash"] = location.hash;
+
+    url["search"] = location.search;
+
+    var hashArray = (url["hash"].substr(1)).split("&");
+
+    var hash = new Object();
+
+    for (i in hashArray){
+
+      var hashKey = hashArray[i].split("=")[0];
+
+      var hashValue = hashArray[i].split("=")[1];
+
+      hash[hashKey] = hashValue;
+
+    }
+
+    // 显示结果页面
+
+    if (hash["state"]==="login"){
+
+      var welcome = $("#welcome");
+
+      welcome.hide();
+
+      var content = $("content");
+
+      content.show();
+
+      if(hash["access_token"]){
+
+      } else {
+
+        $("#content-result").hide();
+
+        $("#content-messege").show().addClass("alert-error");
+
+        var message;
+
+        if (hash["error"]){
+          message = "未获得授权。";
+        } else {
+          message = "请按正常流程登录。";
+        }
+
+        message = message + "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
+
+        $("#content-message").html(message);
+
+
+      }
+      
+
+
+    } else {
+
+    // 显示登录页面
+    
     var loginMessage = $("#login-message");
 
     loginMessage.hide();
@@ -40,8 +113,11 @@ jQuery(document).ready(function(){
     window.location = Calendar.getLoginUrl();
 
       });
+  }
 
 });
+
+// 定义主函数Calendar
 
 var Calendar = (function(window,$){
     
