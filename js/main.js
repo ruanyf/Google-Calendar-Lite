@@ -416,13 +416,13 @@ var Utility = (function(window,$){
 
     var infoMessage = "<strong>提示：</strong>正在加载，请稍候……";
 
-    $("#content-message").fadeIn().find(".alert").addClass("alert-info").html(infoMessage);
+    $("#content-message").fadeIn(1500).find(".alert").addClass("alert-info").html(infoMessage);
 
      Calendar.getEventsList(Calendar.currentCalendar["id"],$("#timemin").val(),$("#timemax").val());
 
      var response = Calendar.eventsList;
 
-     $("#content-message").fadeOut().find(".alert").removeClass("alert-info");
+     $("#content-message").fadeOut(1500).find(".alert").removeClass("alert-info");
 
      // $("#calendar-events").text(response.toString());
 
