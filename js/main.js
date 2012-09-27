@@ -169,7 +169,7 @@ jQuery(document).ready(function(){
 
     listEntrySelect = listEntrySelect + "</select>";
 
-    listEntrySelect = listEntrySelect + "<div class=\"pull-right\"><a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[退出]</a></div>";
+    listEntrySelect = listEntrySelect + "<div class=\"pull-right\"><a class=\"text-error\">[添加新事件]</a> <a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[退出]</a></div>";
 
     $("#calendar-list").html("日历列表 "+listEntrySelect);
 
@@ -374,7 +374,9 @@ var Calendar = (function(window,$){
 
       _eventsListUrl = _eventsListUrl + "&timeMin="+Calendar.currentTimemin;
 
-      _eventsListUrl = _eventsListUrl + "&timeMax="+Calendar.currentTimemax;      
+      _eventsListUrl = _eventsListUrl + "&timeMax="+Calendar.currentTimemax;
+
+	  _eventsListUrl = _eventsListUrl + "&fields=description%2Cetag%2Citems(creator%2Cdescription%2Cend%2Cetag%2ChtmlLink%2CiCalUID%2Cid%2Cstart%2Cstatus%2Csummary%2Cupdated)%2Ckind%2CnextPageToken%2Csummary%2Cupdated";
 
       var req = new XMLHttpRequest();
 
@@ -397,9 +399,113 @@ var Calendar = (function(window,$){
 
     };
 
+	// 对取回的事件列表进行处理
+
+	Calendar.eventsListError = false;
+
+	Calendar.eventsListErrorMessage = '';
+
+	Calendar.eventsListNumber = 0;
+
+	Calendar.doEventsList = function(eventsListResponse){
+
+		if (eventsListResponse['error']){
+
+			Calendar.eventsListError = true;
+
+			Calendar.eventsListErrorMessage = eventsListResponse['error']["message"];
+
+			return 0;
+		}
+
+		if (!eventsListResponse['items']){
+
+			Calendar.eventsListNumber = 0 ;
+
+			return 0;
+		}
+
+		Calendar.eventsListNumber = eventsListResponse['items'].length;
 
 
-    return Calendar;
+	};
+
+	// 生成事件列表
+
+	Calendar.showEventsList = function(itemsArray){
+
+		var _eventsHTML = '';
+
+		for(var i = (Calendar.eventsListNumber-1);i>=0;i--){
+
+			var _item = itemsArray[i];
+
+			var _dateTime = Calendar.parseDateTime(_item['start']['dateTime']);
+
+			_eventsHTM = _eventsHTML + '<div class="event-item" id="'+ _item['id']  + '">';
+
+			_eventsHTML = _eventsHTML + '<div class="alert">';
+			
+			_eventsHTML = _eventsHTML + (Calendar.eventsListNumber-i) + '.  ' + '<div class="pull-right"><a class="muted">[修改]</a> <a class="muted">[删除]</a></div></div>';
+			
+			_eventsHTML = _eventsHTML + '<div class="well">';
+			
+			_eventsHTML = _eventsHTML + '<p class="text-info">';
+			
+			_eventsHTML = _eventsHTML + _dateTime['year'] + '年';
+			
+			_eventsHTML = _eventsHTML + _dateTime['month'] + '月';
+			
+			_eventsHTML = _eventsHTML + _dateTime['day'] + '日';
+
+			_eventsHTML = _eventsHTML + '<small>（'+ _dateTime['hour'] + ":" + _dateTime['minute']+'）</small>';
+			
+			_eventsHTML = _eventsHTML + '</p>';
+
+			_eventsHTML = _eventsHTML + '<blockquote>'+ _item['summary'] +'</blockquote>';
+
+			if(_item['description']) {
+
+				_eventsHTML = _eventsHTML + "<blockquote>"+ _item['description']  +"</blockquote>";
+			}
+
+			_eventsHTML = _eventsHTML + '</div></div>';
+
+		}
+
+		return _eventsHTML;
+		
+	};
+
+	// 解析RFC3339时间字符串
+
+	Calendar.parseDateTime = function(dateTimeString){
+
+		var googleDate = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})([+-]\d{2}):(\d{2})$/;
+
+		var m = googleDate.exec(dateTimeString);
+
+		var dateTimeObject = new Object();
+
+		dateTimeObject['year'] = m[1];
+		dateTimeObject['month'] = m[2];
+		dateTimeObject['day']   = m[3];
+		dateTimeObject['hour']   = m[4];
+		dateTimeObject['minute'] = m[5];
+		dateTimeObject['second'] = m[6];
+		dateTimeObject['msec']   = m[7];
+		dateTimeObject['tzHour'] = m[8];
+		dateTimeObject['tzMin']  = m[9];
+		dateTimeObject['tzOffset'] = new Date().getTimezoneOffset() + dateTimeObject['tzHour'] * 60 + dateTimeObject['tzMin'];
+
+		// return new Date(year, month - 1, day, hour, minute - tzOffset, second, msec);
+		
+		return dateTimeObject;
+
+	};
+
+
+	return Calendar;
 
     })(window,jQuery);
 
@@ -416,17 +522,42 @@ var Utility = (function(window,$){
 
     var infoMessage = "<strong>提示：</strong>正在加载，请稍候……";
 
-    $("#content-message").fadeIn(1500).find(".alert").addClass("alert-info").html(infoMessage);
+    $("#content-message").fadeIn(500).find(".alert").addClass("alert-info").html(infoMessage);
 
      Calendar.getEventsList(Calendar.currentCalendar["id"],$("#timemin").val(),$("#timemax").val());
 
      var response = Calendar.eventsList;
 
-     $("#content-message").fadeOut(1500).find(".alert").removeClass("alert-info");
+     $("#content-message").fadeOut(500).find(".alert").removeClass("alert-info");
 
      // $("#calendar-events").text(response.toString());
 
-      console.dir(response);
+	 Calendar.doEventsList(response);
+
+	 if (Calendar.eventsListError){
+
+	 $("#calendar-events").html('<div class="alert alert-error"><strong>出错了！</strong> '+Calendar.eventsListErrorMessage+"</div>");
+
+		 return 1;
+
+
+	 }
+
+	 if (Calendar.eventsListNumber === 0){
+
+		 $("#calendar-events").html('<div class="alert alert-block"><strong>Ooops!</strong> 该时段是空的，添加一个新事件吧。</div>');
+
+		 return 1;
+
+	 }
+
+	 var calendarEventsHTML = '<div class="alert alert-success">事件总数：'+ Calendar.eventsListNumber  +'</div>';
+
+	 calendarEventsHTML += Calendar.showEventsList(response["items"]);
+
+	 $("#calendar-events").html(calendarEventsHTML);
+
+     // console.dir(response);
 
     };
 
