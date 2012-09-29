@@ -454,7 +454,7 @@ var Calendar = (function(window,$){
 
 		var _eventsHTML = '';
 
-		for(var i = (Calendar.eventsListNumber-1);i>=0;i--){
+		for(var i = 0; i < Calendar.eventsListNumber;i++){
 
 			var _item = itemsArray[i];
 
@@ -464,7 +464,7 @@ var Calendar = (function(window,$){
 
 			_eventsHTML = _eventsHTML + '<div class="alert">';
 			
-			_eventsHTML = _eventsHTML + (Calendar.eventsListNumber-i) + '.  ' + '<div class="pull-right"><a class="muted">[修改]</a> <a class="muted">[删除]</a></div></div>';
+			_eventsHTML = _eventsHTML + (i+1) + '.  ' + '<div class="pull-right"><a class="muted">[修改]</a> <a class="muted">[删除]</a></div></div>';
 			
 			_eventsHTML = _eventsHTML + '<div class="well">';
 			
