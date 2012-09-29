@@ -205,11 +205,29 @@ $("#dpmin").click(function(){
   
   });
 
+$("#timemin").click(function(){
+
+	$("#timemin").attr({
+		'data-date':$('#dpmin').attr('data-date'),
+		'data-date-format':'yyyy-mm-dd'
+		}).datepicker();
+
+});
+
 $("#dpmax").click(function(){
 
     $("#dpmax").datepicker();
     
-    });
+});
+
+$("#timemax").click(function(){
+
+	$("#timemax").attr({
+		'data-date':$('#dpmax').attr('data-date'),
+		'data-date-format':'yyyy-mm-dd'
+		}).datepicker();
+
+});
 
 $("#calendar-date").find("button").click(function(event){
 
