@@ -60,6 +60,12 @@ footer{
 	margin-left:0px !important;
 }
 
+input.error {
+	background-color: #C25283;
+	border: 1px dashed red;
+	color: white;
+}
+
 
 /*!
 * Datepicker for Bootstrap
