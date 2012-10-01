@@ -62,6 +62,18 @@ jQuery(document).on('click','#button-insert-event',function(){
 			
 			});
 
+jQuery(document).on('click','.button-delete',function(event){
+			
+			Utility.confirmEventDelete($(this).attr('data-id'));
+			
+			});
+
+jQuery(document).on('click','#button-confirm-event-delete',function(event){
+
+			Utility.eventDelete($(this).attr('data-id'));
+
+			});
+
 /* 网页加载完成后触发的事件 */
    
 jQuery(document).ready(function(){
@@ -486,11 +498,11 @@ var Calendar = (function(window,$){
 
 			var _dateTime = Calendar.parseDateTime(_item['start']['dateTime']);
 
-			_eventsHTM = _eventsHTML + '<div class="event-item" id="'+ _item['id']  + '">';
+			_eventsHTML = _eventsHTML + '<div class="event-item" id="'+ _item['id']  + '">';
 
 			_eventsHTML = _eventsHTML + '<div class="alert">';
 			
-			_eventsHTML = _eventsHTML + (i+1) + '.  ' + '<div class="pull-right"><a class="muted">[修改]</a> <a class="muted">[删除]</a></div></div>';
+			_eventsHTML = _eventsHTML + (i+1) + '.  ' + '<div class="pull-right"><a class="muted button-edit" data-id="' + _item['id'] + '">[修改]</a> <a class="muted button-delete" data-id="'+ _item['id']  +'">[删除]</a></div></div>';
 			
 			_eventsHTML = _eventsHTML + '<div class="well">';
 			
@@ -578,6 +590,38 @@ var Calendar = (function(window,$){
 
 	};
 
+	// 删除一个事件
+
+	Calendar.eventDeleteId = '';
+
+	Calendar.eventDelete = function(eventId){
+
+		var _deleteEventEndPoint = 'https://www.googleapis.com/calendar/v3/calendars/' + Calendar.currentCalendar['id'] + '/events/' + eventId; 
+
+		var req = new XMLHttpRequest();
+
+		req.open('DELETE',_deleteEventEndPoint,false);
+		
+		req.setRequestHeader("Authorization","Bearer "+_access_token);
+
+		req.onreadystatechange = function (e) {
+
+        if (req.readyState == 4) {
+
+			if (req.status.toString().substr(0,1) === '2' )
+			{
+				Calendar.eventDeleteId = eventId;
+
+			}
+
+          // console.info("response:"+req.responseText);
+ 
+        }
+      };
+
+      req.send(null);
+
+	};
 
 	return Calendar;
 
@@ -631,7 +675,7 @@ var Utility = (function(window,$){
 
 	 }
 
-	 var calendarEventsHTML = '<div class="alert alert-success">事件总数：'+ Calendar.eventsListNumber  +'</div>';
+	 var calendarEventsHTML = '<div class="alert alert-success">事件总数：<span id="event-number">'+ Calendar.eventsListNumber  +'</span></div>';
 
 	 if (!response["items"]) {
 
@@ -889,6 +933,39 @@ var Utility = (function(window,$){
 
 		return numString;
 	
+	};
+
+	// 询问是否删除一个事件
+
+	Utility.confirmEventDelete = function(eventId){
+
+		$('#button-confirm-event-delete').attr('data-id',eventId);
+
+		$('#modal-event-delete').modal('show');
+
+	};
+
+	// 删除一个事件
+
+	Utility.eventDelete = function(eventId){
+
+		Calendar.eventDelete(eventId);
+
+		$('#modal-event-delete').modal('hide');
+
+		if (Calendar.eventDeleteId === eventId){
+
+			$('#'+eventId).hide('5000');
+
+			$('#event-number').text(parseInt($('#event-number').text())-1);
+		} else {
+
+			$("#content-message").fadeIn(1500).find(".alert").addClass("alert-info").html('<strong>出错了！</strong> 删除没有成功……');
+
+
+		}
+		
+
 	};
 
     return Utility;
