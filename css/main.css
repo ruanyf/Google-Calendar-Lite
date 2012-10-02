@@ -66,6 +66,11 @@ input.error {
 	color: white;
 }
 
+.modal-header,.modal-body,.modal-footer{
+
+	width:94.7%;
+
+}
 
 /*!
 * Datepicker for Bootstrap

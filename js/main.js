@@ -1059,7 +1059,11 @@ var Utility = (function(window,$){
 
 		$('#momentstart').val(event['start']['dateTime'].split('T')[1].substr(0,5));
 
+		$('#momentstart').timepicker({'showMeridian':false,'defaultTime':'value'});
+
 		$('#momentend').val(event['end']['dateTime'].split('T')[1].substr(0,5));
+
+		$('#momentend').timepicker({'showMeridian':false,'defaultTime':'value'});
 
 		$('#form-event-summary').val(event['summary']);
 
