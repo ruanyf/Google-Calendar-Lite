@@ -1,5 +1,41 @@
 /* 网页元素绑定事件 */
 
+jQuery(document).on('click','#button-login',function(){
+
+			$("#modal-progress-bar").modal({"keyboard":false,"show":true}); 
+
+			$('#modal-progress-bar .bar').width(10);
+
+			var progress = setInterval(function() {
+
+				var $bar = $('#modal-progress-bar .bar');
+
+				var progressWidth = $("#modal-progress-bar").width();
+
+				if ($bar.width() >= progressWidth) {
+
+					clearInterval(progress);
+
+					$('.progress').removeClass('active');
+
+				} else {
+
+				    $bar.width($bar.width()+parseInt(progressWidth/30));
+
+				}
+
+				var percent = parseInt(($bar.width()/progressWidth)*100);
+
+				percent = percent>100?100:percent;
+
+				$bar.text(percent + "%");
+
+			}, 10);
+
+			window.location = Calendar.getLoginUrl();
+
+		});
+
 jQuery(document).on('click',"#button-add-event",function(){Utility.addEvent();});
 
 jQuery(document).on('click','#dpmin',function(){ $("#dpmin").datepicker(); });
@@ -74,6 +110,12 @@ jQuery(document).on('click','#button-confirm-event-delete',function(event){
 
 			});
 
+jQuery(document).on('click','.button-edit',function(event){
+			
+			Utility.confirmEventEdit($(this).data('id'));
+			
+			});
+
 /* 网页加载完成后触发的事件 */
    
 jQuery(document).ready(function(){
@@ -82,19 +124,7 @@ jQuery(document).ready(function(){
 
 	var url = Utility.parseUrl();
 
-    var hashArray = (url["hash"].substr(1)).split("&");
-
-    var hash = new Object();
-
-    for (i in hashArray){
-
-      var hashKey = hashArray[i].split("=")[0];
-
-      var hashValue = hashArray[i].split("=")[1];
-
-      hash[hashKey] = hashValue;
-
-    }
+	var hash = Utility.parseHash(url['hash']);
 
     // 用户未登录
 
@@ -118,29 +148,6 @@ jQuery(document).ready(function(){
 
     }
 
-    var loginButton = login.find("a"); 
-
-    loginButton.click(function(){
-
-    $("#modal-progress-bar").modal({"keyboard":false,"show":true}); 
-
-    var progress = setInterval(function() {
-	    var $bar = $('#modal-progress-bar .bar');
-
-	    var progressWidth = $("#modal-progress-bar").width();
-    
-		  if ($bar.width() >= progressWidth) {
-		  clearInterval(progress);
-		  $('.progress').removeClass('active');
-          } else {
-		    $bar.width($bar.width()+parseInt(progressWidth/30));
-		  }
-		 $bar.text(parseInt(($bar.width()/progressWidth)*100)+ "%");
-	}, 10);
-
-    window.location = Calendar.getLoginUrl();
-
-      });
       return ;
 
     }
@@ -469,12 +476,16 @@ var Calendar = (function(window,$){
 
 		if (!eventsListResponse['items'] && eventsListResponse['kind'] !== 'calendar#event'){
 
+			Calendar.eventsListError = false;
+
 			Calendar.eventsListNumber = 0 ;
 
 			return 0;
 		}
 
 		if (eventsListResponse['items']){
+
+			Calendar.eventsListError = false;
 
 			Calendar.eventsListNumber = eventsListResponse['items'].length;
 
@@ -564,15 +575,29 @@ var Calendar = (function(window,$){
 
 	Calendar.insertEvent = function(eventOptions){
 
+		if (eventOptions['id']){
+
+			var _insertEventEndPoint = 'https://www.googleapis.com/calendar/v3/calendars/' + Calendar.currentCalendar['id']+ '/events/' + eventOptions['id'];
+
+			var req = new XMLHttpRequest();
+
+			req.open('PUT',_insertEventEndPoint,false);
+		
+		} else {
+
 		var _insertEventEndPoint = 'https://www.googleapis.com/calendar/v3/calendars/' + Calendar.currentCalendar['id'] + '/events';
 
 		var req = new XMLHttpRequest();
 
 		req.open('POST',_insertEventEndPoint,false);
 
+		}
+
 		req.setRequestHeader("Content-Type","application/json");
 
 		req.setRequestHeader("Authorization","Bearer "+_access_token);
+
+		if (eventOptions['id']) delete eventOptions['id'];
 
 		var data = $.toJSON(eventOptions); 
 
@@ -583,6 +608,11 @@ var Calendar = (function(window,$){
           // console.info("response:"+req.responseText);
 
           Calendar.eventsList = $.parseJSON(req.responseText); 
+
+		  if (!Calendar.eventsList['error'] && !Calendar.eventsList['items']){
+
+			  Calendar.eventsList = {'items':new Array(Calendar.eventsList)};
+		  }
         }
       };
 
@@ -709,7 +739,7 @@ var Utility = (function(window,$){
 
       var currendTimestamp =  currendTime.getTime()/1000;
 
-      var currendTimeminStamp = (currendTimestamp/(60*60*24) - 90)*60*60*24;
+      var currendTimeminStamp = (currendTimestamp/(60*60*24) - 30)*60*60*24;
 
       var currendTimemin = (new Date(currendTimeminStamp*1000)).getFullYear()+"-"+((new Date(currendTimeminStamp*1000)).getMonth()+1)+"-"+(new Date(currendTimeminStamp*1000)).getDate();
 
@@ -749,6 +779,8 @@ var Utility = (function(window,$){
 
 		$('#form-event-description').val('');
 
+		$('#event-new').find('.modal-header p').text('添加新事件');
+
 		$('#event-new').modal({"keyboard":false,"show":true});
 
 	};
@@ -787,6 +819,28 @@ var Utility = (function(window,$){
 
 		 return Utility.url;
 
+	};
+
+	// 解析网址的hash部分
+
+	Utility.hash = new Object();
+
+	Utility.parseHash = function(hashString){
+
+		var hashArray = (hashString.substr(1)).split("&");
+
+		for (i in hashArray){
+
+			var hashKey = hashArray[i].split("=")[0];
+
+			var hashValue = hashArray[i].split("=")[1];
+
+			Utility.hash[hashKey] = hashValue;
+
+		}
+
+		return Utility.hash;	
+	
 	};
 	
 	// 设定添加事件时的默认时间
@@ -891,6 +945,14 @@ var Utility = (function(window,$){
 
 		}
 
+		if ($('#button-insert-event').data('id')){i
+
+			options['id'] = $('#button-insert-event').data('id');
+
+			$('#button-insert-event').data('id','');
+
+		}
+
 		return options;
 
 	};
@@ -962,10 +1024,51 @@ var Utility = (function(window,$){
 
 			$("#content-message").fadeIn(1500).find(".alert").addClass("alert-info").html('<strong>出错了！</strong> 删除没有成功……');
 
-
 		}
-		
 
+	};
+
+	// 显示事件编辑窗口
+
+	Utility.confirmEventEdit = function(eventId){
+
+		console.info('事件编辑窗口：ID' + eventId);
+
+		for ( i in Calendar.eventsList['items']){
+
+			if (Calendar.eventsList['items'][i]['id'] === eventId){
+
+				var event = Calendar.eventsList['items'][i];
+
+				break;
+
+			}
+		}
+
+		if (!event) return ;
+
+		$('#event-new').find('.modal-header p').text('修改');
+
+		$('#timestart').val(event['start']['dateTime'].split('T')[0]);
+
+		$('#dpstart').data('date',event['start']['dateTime'].split('T')[0]);
+
+		$('#timeend').val(event['end']['dateTime'].split('T')[0]);
+
+		$('#dpend').data('date',event['end']['dateTime'].split('T')[0]);
+
+		$('#momentstart').val(event['start']['dateTime'].split('T')[1].substr(0,5));
+
+		$('#momentend').val(event['end']['dateTime'].split('T')[1].substr(0,5));
+
+		$('#form-event-summary').val(event['summary']);
+
+		$('#form-event-description').val(event['description']);
+
+		$('#button-insert-event').data('id',eventId);
+	
+		$('#event-new').modal({'keyboard':false,'show':true});
+	
 	};
 
     return Utility;
