@@ -295,7 +295,7 @@ var Calendar = (function(window,$){
 
     _loginArray["scope"] = "https://www.googleapis.com/auth/calendar";
 
-    _loginArray["redirect_uri"] = "http://www.ruanyifeng.com/webapp/calendar/";
+    _loginArray["redirect_uri"] = location.href.split('#')[0].split('?')[0];
 
     _loginArray["response_type"] = "token";
 
