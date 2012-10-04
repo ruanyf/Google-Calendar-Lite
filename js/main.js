@@ -1,5 +1,13 @@
 /* 网页元素绑定事件 */
 
+jQuery(document).on('show','.modal', function(){
+
+			$(this).find('.modal-footer').width('94.8%');
+
+			$(this).css('overflow','hidden');
+			
+			});
+
 jQuery(document).on('click','#button-login',function(){
 
 			$("#modal-progress-bar").modal({"keyboard":false,"show":true}); 
@@ -38,19 +46,26 @@ jQuery(document).on('click','#button-login',function(){
 
 jQuery(document).on('click',"#button-add-event",function(){Utility.addEvent();});
 
-jQuery(document).on('click','#dpmin',function(){ $("#dpmin").datepicker(); });
+jQuery(document).on('click','#dpmin',function(){$("#dpmin").datepicker('show');});
 
-jQuery(document).on('click',"#timemin",function(){
+/*
+   jQuery(document).on('click',"#timemin",function(){
 
 	$("#timemin").attr({
 		'data-date':$('#dpmin').attr('data-date'),
 		'data-date-format':'yyyy-mm-dd'
-		}).datepicker();
+		});
+
+	$('#dpmin').datepicker('show');
 
 });
 
-jQuery(document).on('click',"#dpmax", function(){ $("#dpmax").datepicker();});
+*/
 
+jQuery(document).on('click',"#dpmax", function(){ $("#dpmax").datepicker('show');});
+
+
+/*
 jQuery(document).on('click',"#timemax",function(){
 
 	$("#timemax").attr({
@@ -59,9 +74,11 @@ jQuery(document).on('click',"#timemax",function(){
 		}).datepicker();
 
 });
+*/
 
-jQuery(document).on('click','#dpstart',function(){ $("#dpstart").datepicker(); });
+jQuery(document).on('click','#dpstart',function(){$("#dpstart").datepicker('show'); });
 
+/*
 jQuery(document).on('click',"#timestart",function(){
 
 	$("#timestart").attr({
@@ -70,9 +87,11 @@ jQuery(document).on('click',"#timestart",function(){
 		}).datepicker();
 
 });
+*/
 
-jQuery(document).on('click',"#dpend", function(){ $("#dpend").datepicker();});
+jQuery(document).on('click',"#dpend", function(){ $("#dpend").datepicker('show');});
 
+/*
 jQuery(document).on('click',"#timeend",function(){
 
 	$("#timeend").attr({
@@ -81,10 +100,11 @@ jQuery(document).on('click',"#timeend",function(){
 		}).datepicker();
 
 });
+*/
 
 jQuery(document).on('click','#button-insert-event',function(){
 			
-			if(!Utility.checkEventForm()) return false;
+			if(!Utility.checkEventForm('#form-event-new')) return false;
 
 			var options = Utility.insertEvent();
 
@@ -113,6 +133,12 @@ jQuery(document).on('click','#button-confirm-event-delete',function(event){
 jQuery(document).on('click','.button-edit',function(event){
 			
 			Utility.confirmEventEdit($(this).data('id'));
+			
+			});
+
+jQuery(document).on('click','#button-confirm-calendar-create',function(){
+			
+			Utility.calendarCreate();
 			
 			});
 
@@ -237,6 +263,8 @@ jQuery(document).ready(function(){
 
     }
 
+   listEntrySelect = listEntrySelect + '<option value="new">新增一个日历...</option>';
+
     listEntrySelect = listEntrySelect + "</select>";
 
     listEntrySelect = listEntrySelect + "<div class=\"pull-right\"><a class=\"text-error\" id=\"button-add-event\">[添加新事件]</a> <a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[退出]</a></div>";
@@ -246,6 +274,24 @@ jQuery(document).ready(function(){
     // 绑定日历列表的change事件
 
     $("#calendar-list").find("select").change(function(event){
+
+		if (this.value === 'new'){		
+
+		$('#modal-calendar-create').modal({'keyboard':false,'show':true});
+
+		$('#calendar-list option').each(function(){
+			
+			if (this.value === Calendar.currentCalendar['id']){
+
+			this.selected = 'selected';
+
+			}
+
+			});
+
+		return ;
+
+		}
         
         Utility.resetCurrentDate();
 
@@ -405,7 +451,6 @@ var Calendar = (function(window,$){
 
       }
 
-
     };
 
     // 获取某个日历列表项的事件
@@ -552,6 +597,14 @@ var Calendar = (function(window,$){
 
 		var m = googleDate.exec(dateTimeString);
 
+		if (!m){
+
+			var googleDate = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z$/;
+
+			var m = googleDate.exec(dateTimeString);
+
+		}
+
 		var dateTimeObject = new Object();
 
 		dateTimeObject['year'] = m[1];
@@ -651,6 +704,41 @@ var Calendar = (function(window,$){
 
       req.send(null);
 
+	};
+
+	//  新建一个日历
+
+	Calendar.calendarCreate = function(calendarOptions){
+
+		var _createCalendarEndPoint = 'https://www.googleapis.com/calendar/v3/calendars';
+
+		var req = new XMLHttpRequest();
+
+		req.open('POST',_createCalendarEndPoint,false);
+
+		req.setRequestHeader("Content-Type","application/json");
+
+		req.setRequestHeader("Authorization","Bearer "+_access_token);
+
+		var data = $.toJSON(calendarOptions); 
+
+		req.onreadystatechange = function (e) {
+
+		if (req.readyState == 4) {
+
+			// console.info("response:"+req.responseText);
+
+            Calendar.listResponse = $.parseJSON(req.responseText); 
+			
+
+		}
+
+		}
+
+		 req.send(data);
+
+		 return ;
+	
 	};
 
 	return Calendar;
@@ -877,9 +965,13 @@ var Utility = (function(window,$){
 
       $("#timestart")[0].value = TimeStart;
 
+	  $('#dpstart').data('date',TimeStart);
+
       $("#dpstart").attr("data-date",TimeStart);
 
       $("#timeend")[0].value = TimeEnd;
+
+	  $('#dpend').data('date',TimeEnd);
 
       $("#dpend").attr("data-date", TimeEnd);
 
@@ -887,9 +979,9 @@ var Utility = (function(window,$){
 
 	// 检查插入事件的表单
 
-	Utility.checkEventForm = function(){
+	Utility.checkEventForm = function(formId){
 
-		var form = $('#form-event-new');
+		var form = $(formId);
 
 		var inputArray = form.find('input');
 
@@ -1026,6 +1118,8 @@ var Utility = (function(window,$){
 
 		}
 
+		Calendar.eventDeleteId = '';
+
 	};
 
 	// 显示事件编辑窗口
@@ -1053,9 +1147,13 @@ var Utility = (function(window,$){
 
 		$('#dpstart').data('date',event['start']['dateTime'].split('T')[0]);
 
+		$('#dpstart').attr('data-date',event['start']['dateTime'].split('T')[0]);
+
 		$('#timeend').val(event['end']['dateTime'].split('T')[0]);
 
 		$('#dpend').data('date',event['end']['dateTime'].split('T')[0]);
+
+		$('#dpend').attr('data-date',event['end']['dateTime'].split('T')[0]);
 
 		$('#momentstart').val(event['start']['dateTime'].split('T')[1].substr(0,5));
 
@@ -1072,6 +1170,65 @@ var Utility = (function(window,$){
 		$('#button-insert-event').data('id',eventId);
 	
 		$('#event-new').modal({'keyboard':false,'show':true});
+	
+	};
+
+	// 创建一个新日历
+
+	Utility.calendarCreate = function(){
+
+		if(!Utility.checkEventForm('#modal-calendar-create')) return false;	
+
+		$('#modal-calendar-create').modal('hide');
+		
+		var option = new Object();
+
+		option['summary'] = $('#form-calendar-summary').val();
+
+		var dateOffset = (new Date()).getTimezoneOffset();
+
+		option['timeZone'] = (dateOffset>0?"-":"+") +  Utility.padZero(Math.floor(Math.abs(dateOffset) / 60)) + ":" + Utility.padZero(Math.abs(dateOffset) % 60);
+
+		Calendar.calendarCreate(option);
+
+		var response = Calendar.listResponse;
+
+		if (response['error'] || !response['id']){
+
+		 $("#calendar-events").html('<div class="alert alert-block"><strong>出错了！</strong> 创建日历没有成功。</div>');
+
+		 return ;
+			 
+		}
+
+		response['main'] = 1;
+
+		Calendar.listEntry.forEach(function(value,index,array){
+					
+					Calendar.listEntry[index]['main'] = 0;
+					
+					});
+
+		Calendar.listEntry.push(response);
+
+		$('<option value="' + response['id']  + '">' + response['summary']  + '</option>').prependTo('#calendar-list select');
+
+		Utility.resetCurrentDate();
+
+        Calendar.setCurrentCalendar(response.id);
+
+		$('#calendar-list option').each(function(){
+			
+			if (this.value === Calendar.currentCalendar['id']){
+
+			this.selected = 'selected';
+
+			}
+
+			});
+		
+
+        Utility.refreshEventsList();
 	
 	};
 
@@ -1152,6 +1309,7 @@ var Utility = (function(window,$){
 			if (!this.isInput) {
 				$(document).on('mousedown', $.proxy(this.hide, this));
 			}
+			this.update();
 			this.element.trigger({
 				type: 'show',
 				date: this.date
@@ -1166,7 +1324,7 @@ var Utility = (function(window,$){
 			if (!this.isInput) {
 				$(document).off('mousedown', this.hide);
 			}
-			this.setValue();
+			this.setValue();	
 			this.element.trigger({
 				type: 'hide',
 				date: this.date
