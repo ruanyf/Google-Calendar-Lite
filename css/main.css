@@ -30,6 +30,10 @@ footer{
 
 }
 
+footer a{
+color:silver;
+}
+
 #welcome-img-holder{
   text-align:center;
 }
