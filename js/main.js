@@ -787,7 +787,7 @@ var Utility = (function(window,$){
 
 	 if (Calendar.eventsListNumber === 0){
 
-		 $("#calendar-events").html('<div class="alert alert-block"><strong>Ooops!</strong> 该时段是空的，添加一个新事件吧。</div>');
+		 $("#calendar-events").html('<div class="alert alert-block"><strong>Ooops!</strong> 该时段（' + $('#timemin').val() + '至' + $('#timemax').val() + '）是空的，添加一个新事件吧。</div>');
 
 		 return 1;
 
