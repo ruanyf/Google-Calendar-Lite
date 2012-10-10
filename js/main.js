@@ -1,3 +1,217 @@
+/* 确定浏览器语言Navigator Language */
+
+var NL = (function(){
+			
+			if ('sessionStorage' in window && sessionStorage['language']){
+
+				return sessionStorage['language'];				
+				
+				}
+
+			var NL =  navigator.language?navigator.language:'en';
+
+			if (NL.toLowerCase().substr(0,2)!== 'zh') {
+				NL = 'en'; 
+				} else {
+
+				if (NL.toLowerCase().substr(3,2) === 'cn'){
+					NL = 'cn';
+				} else {
+					NL = 'tw';
+				}
+				
+				}
+
+			if ('sessionStorage' in window) {
+				sessionStorage['language'] = NL;
+			}
+
+			return NL;
+			
+			})();
+
+var NLArray = new Array();
+
+NLArray['cn'] = {
+
+	'html-title':'Google日历简易版',
+	'page-title':'Google日历简易版',
+	'page-intro':'<li>与Google Calendar同步</li><li>操作简捷</li><li>计划日程、写日记</li><li>所有数据直接保存在Google，不经过第三方，完全私密</li>',
+	'button-login':'登录',
+	'comment-url':'留言',
+	'login-message-text':'<strong>很抱歉!</strong> 暂时不支持您的浏览器，推荐使用最新版本的<a href="http://www.google.com/chrome">Chrome</a>或<a href="http://getfirefox.com/">Firefox</a>浏览器。',
+	'timemin-label':'开始日期：',
+	'timemax-label':'结束日期：',
+	'button-refresh':' 刷新 ',
+	'button-refresh-label':'（一次最多返回30个事件。）',
+	'add-new-event-header':'添加新事件',
+	'new-event-start-label':'开始时间<span class="help-inline">（必填）</span>',
+	'new-event-end-label':'结束时间<span class="help-inline">（必填）</span>',
+	'new-event-title-label':'标题<span class="help-inline">（必填）</span>',
+	'new-event-description-label':'内容<span class="help-inline">（选填）</span>',
+	'new-event-button-cancel':'取消',
+	'button-insert-event':'保存',
+	'delete-event-message':'确认删除这个事件？',
+	'delete-event-button-cancel':'取消',
+	'button-confirm-event-delete':'确认',
+	'new-calendar-header':'新增一个日历',
+	'add-new-calendar-label':'名称<span class="help-inline">（必填）</span>',
+	'new-calendar-button-cancel':'取消',
+	'button-confirm-calendar-create':'确认',
+	'no-authorization':'未获得授权。',
+	'please-login':'请正常登录。',
+	'prompt':'提示：',
+	'return':'[返回]',
+	'error':'返回结果有错误。',
+	'no-calendar':'您尚未创建任何日历。',
+	'add-new-calendar':'新增一个日历……',
+	'add-new-event':'[添加新事件]',
+	'logout':'[退出]',
+	'calendar-list':'日历列表 ',
+	'edit':'[修改]',
+	'delete':'[刪除]',
+	'loading':'正在加载，请稍候……',
+	'error-prompt':'出错了！',
+	'time-range':' 该时段',
+	'time-range-message':'是空的，添加一个新事件吧。',
+	'event-number':'事件总数：',
+	'no-calendar-error':'没有指定日历',
+	'delete-fail-error':'删除失败。',
+	'event-edit-header':'修改',
+	'create-calendar-error':'创建新日历失败。'
+};
+
+NLArray['tw'] = {
+
+	'html-title':'Google日曆簡易版',
+	'page-title':'Google日曆簡易版',
+	'page-intro':'<li>與Google Calendar同步</li><li>操作簡捷</li><li>計劃日程、寫日記</li><li>所有數據保存於Google，不經過第三方，完全私密</li>',
+	'button-login':'登錄',
+	'comment-url':'留言',
+	'login-message-text':'<strong>很抱歉!</strong> 暫時不支持您的瀏覽器，推薦使用最新版的<a href="http://www.google.com/chrome">Chrome</a>或<a href="http://getfirefox.com/">Firefox</a>瀏覽器。',
+	'timemin-label':'開始日期：',
+	'timemax-label':'結束日期：',
+	'button-refresh':' 刷新 ',
+	'button-refresh-label':'（一次最多返回30個事件。）',
+	'add-new-event-header':'添加新事件',
+	'new-event-start-label':'開始時間<span class="help-inline">（必填）</span>',
+	'new-event-end-label':'結束時間<span class="help-inline">（必填）</span>',
+	'new-event-title-label':'標題<span class="help-inline">（必填）</span>',
+	'new-event-description-label':'內容<span class="help-inline">（選填）</span>',
+	'new-event-button-cancel':'取消',
+	'button-insert-event':'保存',
+	'delete-event-message':'確認刪除這個事件？',
+	'delete-event-button-cancel':'取消',
+	'button-confirm-event-delete':'確認',
+	'new-calendar-header':'新增一個日曆',
+	'add-new-calendar-label':'名稱<span class="help-inline">（必填）</span>',
+	'new-calendar-button-cancel':'取消',
+	'button-confirm-calendar-create':'確認',
+	'no-authorization':'未獲得授權。',
+	'please-login':'請正常登錄。',
+	'prompt':'提示：',
+	'return':'[返回]',
+	'error':'返回結果有錯誤。',
+	'no-calendar':'您尚未創建任何日曆。',
+	'add-new-calendar':'新增一個日曆……',
+	'add-new-event':'[添加新事件]',
+	'logout':'[退出]',
+	'calendar-list':'日曆列表 ',
+	'edit':'[修改]',
+	'delete':'[刪除]',
+	'loading':'正在加載，請稍候……',
+	'error-prompt':'出錯了！',
+	'time-range':' 該時段',
+	'time-range-message':'是空的，添加一個新事件吧。',
+	'event-number':'事件總數：',
+	'no-calendar-error':'沒有指定日曆',
+	'delete-fail-error':'刪除失敗。',
+	'event-edit-header':'修改',
+	'create-calendar-error':'創建日曆失敗。'
+
+};
+
+NLArray['en'] = {
+
+	'html-title':'Easy Calendar',
+	'page-title':'Easy Calendar',
+	'page-intro':'<li>Synchronize your Google Calendar</li><li>Easy to use</li><li>To schedule your day, to write your journal</li><li>All data saved in Google, total privacy</li>',
+	'button-login':'Login',
+	'comment-url':'comment',
+	'login-message-text':'<strong>Sorry!</strong> Your browser is not supported. The newest version of <a href="http://www.google.com/chrome">Chrome</a> or <a href="http://getfirefox.com/">Firefox</a> is recommended.',
+	'timemin-label':'Start Date:',
+	'timemax-label':'End Date:',
+	'button-refresh':' refresh ',
+	'button-refresh-label':'(Once return 30 events at most.)',
+	'add-new-event-header':'Add New Event',
+	'new-event-start-label':'Start Time<span class="help-inline"> (Required)</span>',
+	'new-event-end-label':'End Time<span class="help-inline"> (Required)</span>',
+	'new-event-title-label':'Summary<span class="help-inline"> (Required)</span>',
+	'new-event-description-label':'Description',
+	'new-event-button-cancel':'Cancel',
+	'button-insert-event':'Save',
+	'delete-event-message':'Are you sure to delete this event?',
+	'delete-event-button-cancel':'Cancel',
+	'button-confirm-event-delete':'Confirm',
+	'new-calendar-header':'Add a new calendar',
+	'add-new-calendar-label':'Summary<span class="help-inline"> (Required)</span>',
+	'new-calendar-button-cancel':'Cancel',
+	'button-confirm-calendar-create':'Save',
+	'no-authorization':'Didn\'t get authorization. ',
+	'please-login':'Please login. ',
+	'prompt':'Prompt: ',
+	'return':'[Return]',
+	'error':'Error returned. ',
+	'no-calendar':'You have not created any calendar. ',
+	'add-new-calendar':'Add a new calendar...',
+	'add-new-event':'[Add new event]',
+	'logout':'[Logout]',
+	'calendar-list':'Calendar list: ',
+	'edit': '[Edit]',
+	'delete':'[Delete]',
+	'loading':'Loading, please wait...',
+	'error-prompt':'Something wrong! ',
+	'time-range':' The time range',
+	'time-range-message':'is empty. You may add a new event. ',
+	'event-number':'Total Event(s): ',
+	'no-calendar-error':'no designated calendar',
+	'delete-fail-error':'Delete failed. ',
+	'event-edit-header':'Edit',
+	'create-calendar-error':'Creating new calendar failed. '
+};
+
+function NLChange(NL){
+
+	document.title = NLArray[NL]['html-title'];
+	$('#page-title').html(NLArray[NL]['page-title']);
+	$('#page-intro').html(NLArray[NL]['page-intro']);
+	$('#button-login').html(NLArray[NL]['button-login']);
+	$('#comment-url').html(NLArray[NL]['comment-url']);
+	$('#login-message-text').html(NLArray[NL]['login-message-text']);
+	$('#timemin-label').html(NLArray[NL]['timemin-label']);
+	$('#timemax-label').html(NLArray[NL]['timemax-label']);
+	$('#button-refresh').html(NLArray[NL]['button-refresh']);
+	$('#button-refresh-label').html(NLArray[NL]['button-refresh-label']);
+	$('#add-new-event-header').html(NLArray[NL]['add-new-event-header']);
+	$('#new-event-start-label').html(NLArray[NL]['new-event-start-label']);
+	$('#new-event-title-label').html(NLArray[NL]['new-event-title-label']);
+	$('#new-event-end-label').html(NLArray[NL]['new-event-end-label']);
+	$('#new-event-description-label').html(NLArray[NL]['new-event-description-label']);
+	$('#new-event-button-cancel').html(NLArray[NL]['new-event-button-cancel']);
+	$('#button-insert-event').html(NLArray[NL]['button-insert-event']);
+
+	$('#delete-event-message').html(NLArray[NL]['delete-event-message']);
+	$('#delete-event-button-cancel').html(NLArray[NL]['delete-event-button-cancel']);
+	// console.info(NLArray[NL]['delete-event-button-cancel']);
+
+	$('#button-confirm-event-delete').html(NLArray[NL]['button-confirm-event-delete']);
+	// console.info(NLArray[NL]['button-confirm-event-delete']);
+	$('#new-calendar-header').html(NLArray[NL]['new-calendar-header']);
+	$('#add-new-calendar-label').html(NLArray[NL]['add-new-calendar-label']);
+	$('#new-calendar-button-cancel').html(NLArray[NL]['new-calendar-button-cancel']);
+	$('#button-confirm-calendar-create').html(NLArray[NL]['button-confirm-calendar-create']);
+};
+
 /* 网页元素绑定事件 */
 
 jQuery(document).on('show','.modal', function(){
@@ -142,10 +356,48 @@ jQuery(document).on('click','#button-confirm-calendar-create',function(){
 			
 			});
 
+jQuery(document).on('click','#english-version',function(){
+
+			if ('sessionStorage' in window) sessionStorage['language'] = 'en';
+
+			var url = Utility.parseUrl();
+
+			location = url["protocol"]+"//"+url["host"]+url["path"];
+
+			NLChange('en');
+			
+			});
+
+jQuery(document).on('click','#tradition-chinese-version',function(){
+
+			if ('sessionStorage' in window) sessionStorage['language'] = 'tw';
+
+			var url = Utility.parseUrl();
+
+			location = url["protocol"]+"//"+url["host"]+url["path"];
+
+			NLChange('tw');
+			
+			});
+
+jQuery(document).on('click','#simplified-chinese-version',function(){
+
+			if ('sessionStorage' in window) sessionStorage['language'] = 'cn';
+
+			var url = Utility.parseUrl();
+
+			location = url["protocol"]+"//"+url["host"]+url["path"];
+
+			NLChange('cn');
+			
+			});
+
 /* 网页加载完成后触发的事件 */
    
 jQuery(document).ready(function(){
 
+	NLChange(NL);
+	
     // 解析URL
 
 	var url = Utility.parseUrl();
@@ -196,12 +448,12 @@ jQuery(document).ready(function(){
         var message;
 
         if (hash["error"]){
-          message = "未获得授权。"+hash["error"];
+          message = NLArray[NL]['no-authorization'] + hash["error"];
         } else {
-          message = "请正常登录。";
+          message = NLArray[NL]['please-login'];
         }
 
-        message = "<strong>提示：</strong> "+ message + "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
+        message = "<strong>" + NLArray[NL]['prompt'] + "</strong> "+ message + "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">" + NLArray[NL]['return'] + "</a>";
 
         console.info(message);
 
@@ -230,9 +482,9 @@ jQuery(document).ready(function(){
         // 如果取回的Calendar List有错误
 
         if (!response["items"]){
-          var errorMessage = (response["error"]?response["error"]["message"]:"返回结果有错误。");
+          var errorMessage = (response["error"]?response["error"]["message"]:NLArray[NL]['error']);
 
-          errorMessage = "<strong>提示：</strong>"+errorMessage+ "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
+          errorMessage = "<strong>" + NLArray[NL]['prompt'] + "</strong>"+errorMessage+ "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">" + NLArray[NL]['return'] + "</a>";
 
         $("#content-message").show().find(".alert").addClass("alert-error").html(errorMessage);
       return ;
@@ -245,7 +497,7 @@ jQuery(document).ready(function(){
 // 如果日历列表项为空
 
     if(Calendar.listEntry.length===0){
-      var infoMessage = "<strong>提示：</strong>您尚未创建任何日历。<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[返回]</a>";
+      var infoMessage = "<strong>" + NLArray[NL]['prompt'] + "</strong>" + NLArray[NL]['no-calendar'] + "<a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">" + NLArray[NL]['return']  + "</a>";
 
       $("#content-message").show().find(".alert").addClass("alert-info").html(infoMessage);
 
@@ -263,13 +515,13 @@ jQuery(document).ready(function(){
 
     }
 
-   listEntrySelect = listEntrySelect + '<option value="new">新增一个日历...</option>';
+   listEntrySelect = listEntrySelect + '<option value="new">' + NLArray[NL]['add-new-calendar'] + '</option>';
 
     listEntrySelect = listEntrySelect + "</select>";
 
-    listEntrySelect = listEntrySelect + "<div class=\"pull-right\"><a class=\"text-error\" id=\"button-add-event\">[添加新事件]</a> <a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">[退出]</a></div>";
+    listEntrySelect = listEntrySelect + "<div class=\"pull-right\"><a class=\"text-error\" id=\"button-add-event\">" + NLArray[NL]['add-new-event'] + "</a> <a href=\""+url["protocol"]+"//"+url["host"]+url["path"] +"\">" + NLArray[NL]['logout'] + "</a></div>";
 
-    $("#calendar-list").html("日历列表 "+listEntrySelect);
+    $("#calendar-list").html(NLArray[NL]['calendar-list'] + listEntrySelect);
 
     // 绑定日历列表的change事件
 
@@ -558,17 +810,17 @@ var Calendar = (function(window,$){
 
 			_eventsHTML = _eventsHTML + '<div class="alert">';
 			
-			_eventsHTML = _eventsHTML + (i+1) + '.  ' + '<div class="pull-right"><a class="muted button-edit" data-id="' + _item['id'] + '">[修改]</a> <a class="muted button-delete" data-id="'+ _item['id']  +'">[删除]</a></div></div>';
+			_eventsHTML = _eventsHTML + (i+1) + '.  ' + '<div class="pull-right"><a class="muted button-edit" data-id="' + _item['id'] + '">' + NLArray[NL]['edit'] + '</a> <a class="muted button-delete" data-id="'+ _item['id']  +'">' + NLArray[NL]['delete'] + '</a> <a href="#content-result">↑</a> </div></div>';
 			
 			_eventsHTML = _eventsHTML + '<div class="well">';
 			
 			_eventsHTML = _eventsHTML + '<p class="text-info">';
 			
-			_eventsHTML = _eventsHTML + _dateTime['year'] + '年';
+			_eventsHTML = _eventsHTML + _dateTime['year'] + '-';
 			
-			_eventsHTML = _eventsHTML + _dateTime['month'] + '月';
+			_eventsHTML = _eventsHTML + _dateTime['month'] + '-';
 			
-			_eventsHTML = _eventsHTML + _dateTime['day'] + '日';
+			_eventsHTML = _eventsHTML + _dateTime['day'] + '';
 
 			_eventsHTML = _eventsHTML + '<small>（'+ _dateTime['hour'] + ":" + _dateTime['minute']+'）</small>';
 			
@@ -760,7 +1012,7 @@ var Utility = (function(window,$){
 
 	if (mode === 'select-event-list'){
 
-    var infoMessage = "<strong>提示：</strong>正在加载，请稍候……";
+    var infoMessage = "<strong>" + NLArray[NL]['prompt'] + "</strong>" + NLArray[NL]['loading'];
 
     $("#content-message").fadeIn(500).find(".alert").addClass("alert-info").html(infoMessage);
 
@@ -778,7 +1030,7 @@ var Utility = (function(window,$){
 
 	 if (Calendar.eventsListError){
 
-	 $("#calendar-events").html('<div class="alert alert-error"><strong>出错了！</strong> '+Calendar.eventsListErrorMessage+"</div>");
+	 $("#calendar-events").html('<div class="alert alert-error"><strong>' + NLArray[NL]['error-prompt'] + '</strong> '+Calendar.eventsListErrorMessage+"</div>");
 
 		 return 1;
 
@@ -787,13 +1039,13 @@ var Utility = (function(window,$){
 
 	 if (Calendar.eventsListNumber === 0){
 
-		 $("#calendar-events").html('<div class="alert alert-block"><strong>Ooops!</strong> 该时段（' + $('#timemin').val() + '至' + $('#timemax').val() + '）是空的，添加一个新事件吧。</div>');
+		 $("#calendar-events").html('<div class="alert alert-block"><strong>Ooops!</strong>' +  NLArray[NL]['time-range'] + '（' + $('#timemin').val() + ' - ' + $('#timemax').val() + '）' + NLArray[NL]['time-range-message'] + '</div>');
 
 		 return 1;
 
 	 }
 
-	 var calendarEventsHTML = '<div class="alert alert-success">事件总数：<span id="event-number">'+ Calendar.eventsListNumber  +'</span></div>';
+	 var calendarEventsHTML = '<div class="alert alert-success">' + NLArray[NL]['event-number'] + '<span id="event-number">'+ Calendar.eventsListNumber +'</span></div>';
 
 	 if (!response["items"]) {
 
@@ -847,7 +1099,7 @@ var Utility = (function(window,$){
 
 		if (!Calendar.currentCalendar['id']){
 
-			Utility.showStatusBar('error','没有指定日历。');
+			Utility.showStatusBar('error',NLArray[NL]['no-calendar-error']);
 
 			return ;
 
@@ -867,7 +1119,7 @@ var Utility = (function(window,$){
 
 		$('#form-event-description').val('');
 
-		$('#event-new').find('.modal-header p').text('添加新事件');
+		$('#event-new').find('.modal-header p').text(NLArray[NL]['add-new-event-header']);
 
 		$('#event-new').modal({"keyboard":false,"show":true});
 
@@ -879,7 +1131,7 @@ var Utility = (function(window,$){
 
 		var statusClass = 'alert-' + status; 
 	
-	    statusMessage = "<strong>提示：</strong>"+ statusMessage + "  <a href=\""+ Utility.url["protocol"] + "//" + Utility.url["host"] + Utility.url["path"] + "\">[返回]</a>";
+	    statusMessage = "<strong>" + NLArray[NL]['prompt'] + "</strong>"+ statusMessage + "  <a href=\""+ Utility.url["protocol"] + "//" + Utility.url["host"] + Utility.url["path"] + "\">" + NLArray[NL]['return'] + "</a>";
 
         $("#content-message").show().find(".alert").addClass(statusClass).html(statusMessage);
 	
@@ -1114,7 +1366,7 @@ var Utility = (function(window,$){
 			$('#event-number').text(parseInt($('#event-number').text())-1);
 		} else {
 
-			$("#content-message").fadeIn(1500).find(".alert").addClass("alert-info").html('<strong>出错了！</strong> 删除没有成功……');
+			$("#content-message").fadeIn(1500).find(".alert").addClass("alert-info").html('<strong>' + NLArray[NL]['error-prompt'] + '</strong>' + NLArray[NL]['delete-fail-error']);
 
 		}
 
@@ -1126,7 +1378,7 @@ var Utility = (function(window,$){
 
 	Utility.confirmEventEdit = function(eventId){
 
-		console.info('事件编辑窗口：ID' + eventId);
+		// console.info('事件编辑窗口：ID' + eventId);
 
 		for ( i in Calendar.eventsList['items']){
 
@@ -1141,7 +1393,7 @@ var Utility = (function(window,$){
 
 		if (!event) return ;
 
-		$('#event-new').find('.modal-header p').text('修改');
+		$('#event-new').find('.modal-header p').text(NLArray[NL]['event-edit-header']);
 
 		$('#timestart').val(event['start']['dateTime'].split('T')[0]);
 
@@ -1195,7 +1447,7 @@ var Utility = (function(window,$){
 
 		if (response['error'] || !response['id']){
 
-		 $("#calendar-events").html('<div class="alert alert-block"><strong>出错了！</strong> 创建日历没有成功。</div>');
+		 $("#calendar-events").html('<div class="alert alert-block"><strong>' + NLArray[NL]['error-prompt'] + '</strong>' +  NLArray[NL]['create-calendar-error'] + '</div>');
 
 		 return ;
 			 

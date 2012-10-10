@@ -16,7 +16,7 @@
 
   <div class="row-fluid">
       <div class="span12">
-        <h1>Google日历简易版</h1>
+        <h1 id="page-title">Google日历简易版</h1>
       </div>
     </div>
 
@@ -33,7 +33,7 @@
           <img src="img/calendar.png" />
         </div>
         <div class="span8">
-          <ul>
+          <ul id='page-intro'>
             <li>与Google Calendar同步</li>
             <li>操作简捷</li>
             <li>计划日程、写日记</li>
@@ -51,7 +51,7 @@
 
     <div class="row-fluid hide" id="login-message">
 
-      <div class="alert alert-error">
+      <div class="alert alert-error" id="login-message-text">
 
         <strong>很抱歉!</strong> 暂时不支持您的浏览器，推荐使用最新版本的<a href="http://www.google.com/chrome">Chrome</a>或<a href="http://getfirefox.com/">Firefox</a>浏览器。
 
@@ -96,7 +96,7 @@
 
 			 <form class="form-inline">
 
-				 <label class="control-label" for="timemin">开始日期:</label>
+				 <label class="control-label" for="timemin" id="timemin-label">开始日期:</label>
 
 				 <div class="input-prepend date datepicker" id="dpmin" data-date="" data-date-format="yyyy-mm-dd">
 
@@ -106,7 +106,7 @@
 
 				 </div>
 
-				 <label class="control-label" for="timemax">结束日期:</label>
+				 <label class="control-label" for="timemax" id="timemax-label">结束日期:</label>
 
 				 <div class="input-prepend date datepicker" id="dpmax" data-date="" data-date-format="yyyy-mm-dd">
 
@@ -116,9 +116,9 @@
 
 				 </div>
 
-				 <button class="btn"> 刷新 </button>
+				 <button class="btn" id="button-refresh"> 刷新 </button>
 
-				 <label class="control-label">（一次最多返回30个事件。）</span>
+				 <label class="control-label" id="button-refresh-label">（一次最多返回30个事件。）</span>
 
 			 </form>
 
@@ -145,7 +145,7 @@
 <div class="modal hide fade" id="event-new">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <p>添加新事件</p>
+    <p id="add-new-event-header">添加新事件</p>
   </div>
   <div class="modal-body">
 
@@ -153,7 +153,7 @@
 
 	 <div class="controls controls-row">
 
-	 <label>开始时间<span class="help-inline">（必填）</span></label>
+	 <label id="new-event-start-label">开始时间<span class="help-inline">（必填）</span></label>
 
 	 </div>
 
@@ -180,7 +180,7 @@
 
 		<div class="controls controls-row">
 
-		 <label>结束时间<span class="help-inline">（必填）</span></label>
+		 <label id="new-event-end-label">结束时间<span class="help-inline">（必填）</span></label>
 
 		 </div>
 
@@ -207,7 +207,7 @@
 
 	 <div class="controls controls-row">
 
-	 <label>标题<span class="help-inline">（必填）</span></label>
+	 <label id="new-event-title-label">标题<span class="help-inline">（必填）</span></label>
 
 	 </div>
 
@@ -219,7 +219,7 @@
 
 	 <div class="controls controls-row">
 
-	 <label>内容<span class="help-inline">（选填）</span></label>
+	 <label id="new-event-description-label">内容<span class="help-inline">（选填）</span></label>
 
 	 </div>
 
@@ -233,7 +233,7 @@
     
   </div>
   <div class="modal-footer">
-    <a data-dismiss="modal" aria-hidden="true" class="btn btn-large">取消</a>
+    <a data-dismiss="modal" aria-hidden="true" class="btn btn-large" id="new-event-button-cancel">取消</a>
     <a href="#" class="btn btn-large btn-primary" id="button-insert-event">保存</a>
   </div>
 </div>
@@ -245,10 +245,10 @@
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
   </div>
   <div class="modal-body">
-    <p>确认删除这个事件？</p>
+    <p id="delete-event-message">确认删除这个事件？</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true" id="delete-event-button-cancel">取消</button>
     <button class="btn btn-primary" id="button-confirm-event-delete">确认</a>
   </div>
 </div>
@@ -258,23 +258,23 @@
 <div class="modal hide fade" id="modal-calendar-create">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	<p>新增一个日历</p>
+	<p id="new-calendar-header">新增一个日历</p>
   </div>
   <div class="modal-body">
 
-   <label>名称<span class="help-inline">（必填）</span></label>
+   <label id="add-new-calendar-label">名称<span class="help-inline">（必填）</span></label>
 
    <input type="text" name="summary" id="form-calendar-summary" class="span6">
 
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">取消</button>
+    <button class="btn" data-dismiss="modal" id="new-calendar-button-cancel" aria-hidden="true">取消</button>
     <button class="btn btn-primary" id="button-confirm-calendar-create">确认</a>
   </div>
 </div>
 
 <footer>
-<a href="http://www.ruanyifeng.com/blog/2012/10/google_calendar_lite_reloaded.html" target="_blank">留言</a> | built by <a href="http://www.ruanyifeng.com" target="_blank"">ruanyifeng.com</a>
+<a id="english-version">English Version</a> | <a id="tradition-chinese-version">繁體中文版</a> | <a id="simplified-chinese-version">简体中文版</a>  |  <a id="comment-url" href="http://www.ruanyifeng.com/blog/2012/10/google_calendar_lite_reloaded.html" target="_blank">留言</a> | built by <a href="http://www.ruanyifeng.com" target="_blank"">ruanyifeng.com</a>
 </footer>
 
 </body>
