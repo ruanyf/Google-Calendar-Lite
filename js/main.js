@@ -529,7 +529,7 @@ jQuery(document).ready(function(){
 
 		if (this.value === 'new'){		
 
-		$('#modal-calendar-create').modal({'keyboard':false,'show':true});
+		$('#modal-calendar-create').modal({'keyboard':false,'show':true,'backdrop':"static"});
 
 		$('#calendar-list option').each(function(){
 			
@@ -1121,7 +1121,7 @@ var Utility = (function(window,$){
 
 		$('#event-new').find('.modal-header p').text(NLArray[NL]['add-new-event-header']);
 
-		$('#event-new').modal({"keyboard":false,"show":true});
+		$('#event-new').modal({"keyboard":false,"show":true,'backdrop':"static"});
 
 	};
 
@@ -1421,7 +1421,7 @@ var Utility = (function(window,$){
 
 		$('#button-insert-event').data('id',eventId);
 	
-		$('#event-new').modal({'keyboard':false,'show':true});
+		$('#event-new').modal({'keyboard':false,'show':true,'backdrop':"static"});
 	
 	};
 
