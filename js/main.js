@@ -719,7 +719,7 @@ var Calendar = (function(window,$){
 
       var _eventsListUrl = _eventsListEndPoint + "?maxResults=30";
 
-      _eventsListUrl = _eventsListUrl + "&orderBy=updated"
+      _eventsListUrl = _eventsListUrl + "&orderBy=startTime&singleEvents=True"
 
       Calendar.currentTimemin = (new Date(timemin.split("-")[0],(timemin.split("-")[1]-1),timemin.split("-")[2],'00','00','00')).toISOString();  
  
