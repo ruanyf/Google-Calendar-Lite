@@ -804,7 +804,7 @@ var Calendar = (function(window,$){
 
 			var _item = itemsArray[i];
 
-			if (_item['start']['dataTime'] === null){
+			if (_item['start']['dataTime'] === undefined){
 				var _dateTime = Calendar.parseDateTime(_item['start']['date']);
 			} else {
 				var _dateTime = Calendar.parseDateTime(_item['start']['dateTime']);
