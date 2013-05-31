@@ -826,7 +826,9 @@ var Calendar = (function(window,$){
 			
 			_eventsHTML = _eventsHTML + _dateTime['day'] + '';
 
-			_eventsHTML = _eventsHTML + '<small>（'+ _dateTime['hour'] + ":" + _dateTime['minute']+'）</small>';
+			if (_dateTime['hour']!==undefined){
+	   			_eventsHTML = _eventsHTML + '<small>（'+ _dateTime['hour'] + ":" + _dateTime['minute']+'）</small>';
+			}
 			
 			_eventsHTML = _eventsHTML + '</p>';
 
@@ -1404,6 +1406,11 @@ var Utility = (function(window,$){
 		if (!event) return ;
 
 		$('#event-new').find('.modal-header p').text(NLArray[NL]['event-edit-header']);
+
+		if (event['start']['dateTime']===undefined) {
+			event['start']['dateTime'] = event['start']['date'] + 'T00:00:00' ;
+			event['end']['dateTime'] = event['end']['date'] + 'T23:59:59' ; 		
+		}
 
 		$('#timestart').val(event['start']['dateTime'].split('T')[0]);
 
