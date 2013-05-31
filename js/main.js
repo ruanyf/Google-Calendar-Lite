@@ -804,7 +804,11 @@ var Calendar = (function(window,$){
 
 			var _item = itemsArray[i];
 
-			var _dateTime = Calendar.parseDateTime(_item['start']['dateTime']);
+			if (_item['start']['dataTime'] === null){
+				var _dateTime = Calendar.parseDateTime(_item['start']['date']);
+			} else {
+				var _dateTime = Calendar.parseDateTime(_item['start']['dateTime']);
+			}
 
 			_eventsHTML = _eventsHTML + '<div class="event-item" id="'+ _item['id']  + '">';
 
@@ -855,6 +859,12 @@ var Calendar = (function(window,$){
 
 			var m = googleDate.exec(dateTimeString);
 
+		}
+
+		if (!m){
+			var googleDate = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+			var m = googleDate.exec(dateTimeString);
 		}
 
 		var dateTimeObject = new Object();
